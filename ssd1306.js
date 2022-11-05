@@ -28,6 +28,14 @@ const Mode = {
   COMMAND: 0b1
 }
 
+/**
+ * Datasheet can be found at: https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf
+ *
+ * Portions of this code have been ported from:
+ *   - https://github.com/ondryaso/pi-ssd1306-java/blob/master/src/eu/ondryaso/ssd1306/Display.java
+ *   - https://github.com/adafruit/Adafruit_SSD1306/blob/master/Adafruit_SSD1306.cpp
+ */
+
 const SPI_BUS = 0; // default to bus number 0
 const DEVICE_NUMBER = 0;
 
