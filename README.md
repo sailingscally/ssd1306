@@ -12,6 +12,9 @@ The module exposes the following methods:
 - `display(buffer, x, y, width, pages)` - writes the data in the given buffer on a section of the screen,
 if no buffer is specified the entire in-memory buffer is written to the display
 - `clear(page)` - clear a single page on the in-memory buffer or all pages if no page is specified
+- `width()` - the actual width of the device in pixels
+- `height()` - the actual height on the device in pixels
+- `pages()` - the number of pages available in the device (height / 8) - each page is one byte (8 bits) tall
 
 ## Constants
 
@@ -20,6 +23,8 @@ The module exposes the following constants:
 - `SPLASH` - used for testing purposes and some fun
 - `SPI_BUS` - the default SPI bus is **0**
 - `DEVICE_NUMBER` - the default device number is **0**
+- `WIDTH` - the default width of the screen
+- `HEIGHT` - the default height of the screen
 
 ## Tests & Samples
 

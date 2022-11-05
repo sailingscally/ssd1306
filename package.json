@@ -1,6 +1,6 @@
 {
   "name": "ssd1306",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "API for the SSD1306 OLED display.",
   "main": "ssd1306.js",
   "scripts": {

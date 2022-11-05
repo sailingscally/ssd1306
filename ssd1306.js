@@ -321,6 +321,18 @@ exports.reset = reset;
 exports.display = display;
 exports.clear = clear;
 
+exports.width = () => {
+  return _width;
+};
+exports.height = () => {
+  return _height;
+};
+exports.pages = () => {
+  return _pages;
+};
+
 exports.SPLASH = SPLASH;
 exports.SPI_BUS = SPI_BUS;
 exports.DEVICE_NUMBER = DEVICE_NUMBER;
+exports.WIDTH = WIDTH;
+exports.HEIGHT = HEIGHT;
