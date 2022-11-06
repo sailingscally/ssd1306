@@ -26,7 +26,7 @@ const test = async () => {
   await ssd1306.init();
   await ssd1306.display(); // clears the display on start in case there was data in the display
 
-  await ssd1306.display(ssd1306.SPLASH, 48, 0, 32, 32 / 8 ); // 32 pixels high, 8 pixels/ page -> 4 pages
+  await ssd1306.display(ssd1306.SPLASH, 48, 0, 32, 32 / 8); // 32 pixels high, 8 pixels/ page -> 4 pages
 
   console.log('WIDTH: ' + ssd1306.WIDTH);
   console.log('HEIGHT: ' + ssd1306.HEIGHT);
