@@ -121,9 +121,7 @@ const rst = new Gpio(RESET_PIN, 'high'); // reset is active low, pin needs to be
  */
 let _width = undefined;
 let _height = undefined;
-
 let _pages = undefined;
-let _buffer = undefined;
 
 const lock = new AsyncLock();
 
@@ -234,11 +232,7 @@ const open = () => {
 const init = async (width = WIDTH, height = HEIGHT) => {
   _width = width;
   _height = height;
-
   _pages = height / 8;
-  
-  _buffer = new Array(_width * _pages);
-  _buffer.fill(0);
 
   lock.acquire('ssd1306', async () => {
     _device = await open();
@@ -285,9 +279,9 @@ const init = async (width = WIDTH, height = HEIGHT) => {
 }
 
 /**
- * Writes the in-memory buffer or a given buffer to the specified location on the OLED display.
+ * Writes the given buffer to the specified location on the OLED display.
  */
-const display = async (buffer = _buffer, x = 0, y = 0, width = _width, pages = _pages) => {
+const display = async (buffer, x, y, width, pages) => {
   lock.acquire('ssd1306', async () => {
     await command(SET_COLUMN_ADDRESS);
     await command(x);
@@ -301,28 +295,13 @@ const display = async (buffer = _buffer, x = 0, y = 0, width = _width, pages = _
 }
 
 /**
- * Sets the display to inverse mode.
+ * Clears the OLED display, either the whole screen or just a single page.
  */
-const invert = async () => {
-  await command(SET_INVERSE_DISPLAY);
-}
+const clear = async (page) => {
+  const buffer = new Array(page == undefined ? _width * _pages : _width);
+  buffer.fill(0);
 
-/**
- * Sets the display to normal mode (non inverse).
- */
-const normal = async () => {
-  await command(SET_NORMAL_DISPLAY);
-}
-
-/**
- * Clears the in-memory buffer, either the whole buffer or just a single page.
- */
-const clear = (page) => {
-  if(page == undefined) {
-    _buffer.fill(0);
-  } else {
-    _buffer.fill(0, page * _width, (page + 1) * _width);
-  }
+  await display(buffer, 0, page | 0, _width, buffer.length / _width);
 }
 
 exports.init = init;

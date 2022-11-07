@@ -3,6 +3,10 @@
 This is a Node.JS for the [SSD1306](https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf) OLED display which
 will be placed inside the R nineT navigation tower to provide some basic system status information.
 
+Unlike other OLED display drivers, this one doesn't use an in-memory buffer. All data is written directly to
+the screen. In case an application needs double buffering for drawing to the screen, it will have to
+implement it.
+
 ## Thread Safe
 
 Running an event driven service will soon show you that the OLED display will crash and start showing an odd
@@ -17,7 +21,7 @@ The module exposes the following methods:
 - `reset()` - resets the device, this is part of the initialisation schedule
 - `display(buffer, x, y, width, pages)` - writes the data in the given buffer on a section of the screen,
 if no buffer is specified the entire in-memory buffer is written to the display
-- `clear(page)` - clear a single page on the in-memory buffer or all pages if no page is specified
+- `clear(page)` - clears a single page on the in-memory buffer or all pages if no page is specified
 - `width()` - the actual width of the device in pixels
 - `height()` - the actual height on the device in pixels
 - `pages()` - the number of pages available in the device (height / 8) - each page is one byte (8 bits) tall

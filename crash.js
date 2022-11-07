@@ -24,7 +24,11 @@ const ssd1306 = require('./ssd1306.js');
 const crash = async () => {
   await ssd1306.reset();
   await ssd1306.init();
-  await ssd1306.display(); // clears the display on start in case there was data in the display
+
+  await ssd1306.clear(0); // clears the display on start in case there was data in the display
+  await ssd1306.clear(1); // tests the clear method for each page
+  await ssd1306.clear(2);
+  await ssd1306.clear(3);
 
   await ssd1306.display(ssd1306.SPLASH, 48, 0, 32, 32 / 8); // 32 pixels high, 8 pixels/ page -> 4 pages
 
