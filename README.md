@@ -3,6 +3,12 @@
 This is a Node.JS for the [SSD1306](https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf) OLED display which
 will be placed inside the R nineT navigation tower to provide some basic system status information.
 
+## Thread Safe
+
+Running an event driven service will soon show you that the OLED display will crash and start showing an odd
+behaviour if some kind of thread synchronisation isn't used. This module uses a *mutex* from
+[async-lock](https://www.npmjs.com/package/async-lock) internally, making it thread safe.
+
 ## Methods
 
 The module exposes the following methods:
@@ -30,6 +36,9 @@ The module exposes the following constants:
 
 The script [test.js](https://github.com/sailingscally/ssd1306/blob/master/test.js) provides some sample
 code which may be used to test connectivity to the device.
+
+The script [crash.js](https://github.com/sailingscally/ssd1306/blob/master/crash.js) was used to crash the
+OLED display before adding the mutex. It now confirms it is thread safe.
 
 ## Usage
 

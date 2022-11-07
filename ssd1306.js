@@ -20,6 +20,7 @@
  */
 
 const { Gpio } = require('onoff');
+const AsyncLock = require('async-lock');
 
 const spi = require('spi-device');
 
@@ -124,6 +125,8 @@ let _height = undefined;
 let _pages = undefined;
 let _buffer = undefined;
 
+const lock = new AsyncLock();
+
 const sleep = (ms) => {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -203,9 +206,11 @@ const write = async (mode, data) => {
  * Resets the device which is part of the startup schedule.
  */
 const reset = async () => {
-  await low(rst);
-  await sleep(10);
-  await high(rst);
+  lock.acquire('ssd1306', async () => {
+    await low(rst);
+    await sleep(10);
+    await high(rst);
+  });
 }
 
 /**
@@ -235,60 +240,64 @@ const init = async (width = WIDTH, height = HEIGHT) => {
   _buffer = new Array(_width * _pages);
   _buffer.fill(0);
 
-  _device = await open();
+  lock.acquire('ssd1306', async () => {
+    _device = await open();
 
-  await command(SET_DISPLAY_OFF);
+    await command(SET_DISPLAY_OFF);
 
-  await command(SET_DISPLAY_CLOCK_DIVIDE);
-  await command(RATIO_FREQUENCY);
+    await command(SET_DISPLAY_CLOCK_DIVIDE);
+    await command(RATIO_FREQUENCY);
 
-  await command(SET_MULTIPLEX_RATIO);
-  await command(height == HEIGHT ? MULTIPLEX_RATIO_128x32 : MULTIPLEX_RATIO_128x64); // default height is 32
+    await command(SET_MULTIPLEX_RATIO);
+    await command(height == HEIGHT ? MULTIPLEX_RATIO_128x32 : MULTIPLEX_RATIO_128x64); // default is 32
 
-  await command(SET_DISPLAY_OFFSET);
-  await command(DEFAULT_DISPLAY_OFFSET);
+    await command(SET_DISPLAY_OFFSET);
+    await command(DEFAULT_DISPLAY_OFFSET);
 
-  await command(SET_START_LINE);
+    await command(SET_START_LINE);
 
-  await command(SET_CHARGE_PUMP);
-  await command(CHARGE_PUMP_SWITCHING_CAPACITOR); // change if an external vcc is used for the OLED display
+    await command(SET_CHARGE_PUMP);
+    await command(CHARGE_PUMP_SWITCHING_CAPACITOR); // change if an external vcc is used for the OLED display
 
-  await command(SET_MEMORY_ADDRESSING_MODE);
-  await command(HORIZONTAL_ADDRESSING_MODE);
+    await command(SET_MEMORY_ADDRESSING_MODE);
+    await command(HORIZONTAL_ADDRESSING_MODE);
 
-  await command(SET_SEGMENT_REMAP);
-  await command(SET_COM_OUTPUT_SCAN_DIRECTION);
+    await command(SET_SEGMENT_REMAP);
+    await command(SET_COM_OUTPUT_SCAN_DIRECTION);
 
-  await command(SET_COM_PINS);
-  await command(height == HEIGHT ? COM_PINS_128x32 : COM_PINS_128x64); // default height is 32
+    await command(SET_COM_PINS);
+    await command(height == HEIGHT ? COM_PINS_128x32 : COM_PINS_128x64); // default height is 32
 
-  await command(SET_CONTRAST);
-  await command(DEFAULT_CONTRAST);
+    await command(SET_CONTRAST);
+    await command(DEFAULT_CONTRAST);
 
-  await command(SET_PRE_CHARGE_PERIOD);
-  await command(DEFAULT_PRE_CHARGE_PERIOD);
+    await command(SET_PRE_CHARGE_PERIOD);
+    await command(DEFAULT_PRE_CHARGE_PERIOD);
 
-  await command(SET_VCOMH_DESELECT_LEVEL);
-  await command(DEFAULT_VCOMH_DESELECT_LEVEL);
+    await command(SET_VCOMH_DESELECT_LEVEL);
+    await command(DEFAULT_VCOMH_DESELECT_LEVEL);
 
-  await command(SET_DISPLAY_ON_RESUME);
-  await command(SET_NORMAL_DISPLAY);
+    await command(SET_DISPLAY_ON_RESUME);
+    await command(SET_NORMAL_DISPLAY);
 
-  await command(SET_DISPLAY_ON);
+    await command(SET_DISPLAY_ON);
+  });
 }
 
 /**
  * Writes the in-memory buffer or a given buffer to the specified location on the OLED display.
  */
 const display = async (buffer = _buffer, x = 0, y = 0, width = _width, pages = _pages) => {
-  await command(SET_COLUMN_ADDRESS);
-  await command(x);
-  await command(x + width - 1);
-  await command(SET_PAGE_ADDRESS );
-  await command(y);
-  await command(y + pages - 1);
+  lock.acquire('ssd1306', async () => {
+    await command(SET_COLUMN_ADDRESS);
+    await command(x);
+    await command(x + width - 1);
+    await command(SET_PAGE_ADDRESS );
+    await command(y);
+    await command(y + pages - 1);
 
-  await data(buffer);
+    await data(buffer);
+  });
 }
 
 /**
