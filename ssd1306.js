@@ -23,6 +23,7 @@ const { Gpio } = require('onoff');
 const AsyncLock = require('async-lock');
 
 const spi = require('spi-device');
+const commons = require('r9t-commons');
 
 const Mode = {
   DATA: 0b0,
@@ -125,12 +126,6 @@ let _pages = undefined;
 
 const lock = new AsyncLock();
 
-const sleep = (ms) => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
 /**
  * Sets the specified pin to LOW.
  */
@@ -206,7 +201,7 @@ const write = async (mode, data) => {
 const reset = async () => {
   lock.acquire('ssd1306', async () => {
     await low(rst);
-    await sleep(10);
+    await commons.sleep(10);
     await high(rst);
   });
 }
