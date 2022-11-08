@@ -1,6 +1,6 @@
 {
   "name": "ssd1306",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "API for the SSD1306 OLED display.",
   "main": "ssd1306.js",
   "scripts": {
@@ -9,6 +9,7 @@
   "author": "Luis Martins",
   "license": "Apache-2.0",
   "dependencies": {
+    "async-lock": "^1.4.0",
     "onoff": "^6.0.3",
     "spi-device": "^3.1.2"
   }
