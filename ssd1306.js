@@ -296,7 +296,9 @@ const clear = async (page) => {
   const buffer = new Array(page == undefined ? _width * _pages : _width);
   buffer.fill(0);
 
-  await display(buffer, 0, page | 0, _width, buffer.length / _width);
+  lock.acquire('ssd1306', async () => {
+    await display(buffer, 0, page | 0, _width, buffer.length / _width);
+  });
 }
 
 exports.init = init;
