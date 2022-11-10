@@ -199,7 +199,7 @@ const write = async (mode, data) => {
  * Resets the device which is part of the startup schedule.
  */
 const reset = async () => {
-  lock.acquire('ssd1306', async () => {
+  await lock.acquire('ssd1306', async () => {
     await low(rst);
     await commons.sleep(10);
     await high(rst);
@@ -229,7 +229,7 @@ const init = async (width = WIDTH, height = HEIGHT) => {
   _height = height;
   _pages = height / 8;
 
-  lock.acquire('ssd1306', async () => {
+  await lock.acquire('ssd1306', async () => {
     _device = await open();
 
     await command(SET_DISPLAY_OFF);
@@ -277,7 +277,7 @@ const init = async (width = WIDTH, height = HEIGHT) => {
  * Writes the given buffer to the specified location on the OLED display.
  */
 const display = async (buffer, x, y, width, pages) => {
-  lock.acquire('ssd1306', async () => {
+  await lock.acquire('ssd1306', async () => {
     await command(SET_COLUMN_ADDRESS);
     await command(x);
     await command(x + width - 1);
@@ -296,9 +296,7 @@ const clear = async (page) => {
   const buffer = new Array(page == undefined ? _width * _pages : _width);
   buffer.fill(0);
 
-  lock.acquire('ssd1306', async () => {
-    await display(buffer, 0, page | 0, _width, buffer.length / _width);
-  });
+  await display(buffer, 0, page | 0, _width, buffer.length / _width);
 }
 
 exports.init = init;
